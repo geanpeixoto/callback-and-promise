@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>reveal.js</title>
+	<title>Callback & Promises</title>
 
 	<link rel="stylesheet" href="css/reveal.css">
 	<link rel="stylesheet" href="css/theme/black.css">
@@ -31,12 +31,53 @@
 				<h3>Gean Carlo Peixoto</h3>
 			</section>
 			<section>
-				O fluxo de execução de um programa é determinado pela ordem em que suas
-				instruções são executadas.
+				<section>
+					<h3>Revisão...</h3>
+				</section>
+				<section>
+					<h3>Funções</h3>
+					<pre>
+						<code class="js">
+// named function
+function myFunction() {
+	console.log('my-function');
+}
+
+var myFunction2 = myFunction; // function
+
+// anonymous function
+var myFunction3 = function() {
+	console.log('another-function');
+};
+
+myFunction(); // console: "my-function"
+myFunction2(); // console: "my-function"
+myFunction3(); // console: "another-function"
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h3>Closures</h3>
+					<pre>
+						<code class="js">
+var number = 10;
+function myFunction() {
+	var inner = 'inner';
+	console.log(number++, string);
+}
+myFunction(); // console: 10, undefined
+var string = "my string";
+myFunction(); // console: 11, "my string"
+console.log(inner); // ReferenceError: inner is not defined
+						</code>
+					</pre>
+				</section>
 			</section>
 			<section>
-				Algumas tarefas podem ser executadas sem interferir em nada no fluxo principal
-				de execução. Essas tarefas são conhecidas como fluxos assíncronos.
+				O fluxo de execução de um programa é determinado pela ordem em que suas instruções são executadas.
+			</section>
+			<section>
+				Algumas tarefas podem ser executadas sem interferir em nada no fluxo principal de execução. Essas tarefas são conhecidas como fluxos assíncronos.
 			</section>
 			<section>
 				<h3>Async functions</h3>
@@ -47,89 +88,275 @@
 				</ul>
 			</section>
 			<section>
-				<h3>Revisão...</h3>
-			</section>
-			<section>
-				<h3>Callbacks</h3>
-				<p>
-					<i>Callback</i> é a referência à uma função que será executada no futuro,
-					em um tempo conveniênte.
-				</p>
-			</section>
-			<section>
+				<section>
+					<h3>Callbacks</h3>
+					<p>
+						<i>Callback</i> é a referência à uma função que será executada no futuro, em um tempo conveniênte.
+					</p>
+				</section>
 				<section>
 					<pre>
-						<code	data-trim data-noescape>
+						<code class="js">
 /**
- * Irá executar um método qualquer após o delay de 2s
- *
- * @param {function} callback
- * 		Método que será executado
- *
- * @return {voidnoc}
+ * Quando executado, [[callback]], irá exibir "run" no console
  */
-function async(callback) {
-	setTimeout(function() {
-		callback(Math.trunc(Math.random()*1000));
-	}, 2000);
+function callback() {
+	console.log('run');
+}
+
+/**
+ * Espera 1s e, então, executa o método [[callback]]
+ */
+setTimeout(callback, 1000);
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code class="js">
+/**
+ * Irá executar o [[callback]] dentro de 1 segundo
+ *
+ * @param {Array} input
+ * @param {Function} callback
+ *        Método que será executado dentro de 1s.
+ *        Seu primeiro parâmetro será o [[input]] com [[count]]
+ *        inserido no início, isto é: [input, ...count]
+ */
+var count = 0;
+function asyncf(input, callback) {
+  setTimeout(function() {
+    callback([count++].concat(input));
+  }, Math.trunc(Math.random()*1000));
 }
 						</code>
 					</pre>
 				</section>
 				<section>
 					<pre>
-						<code	data-trim data-noescape>
-function async(callback) {
-	setTimeout(function() {
-		callback(Math.trunc(Math.random()*1000));
-	}, 2000);
+						<code class="js">
+function myCallback(result) {
+	console.log(result); //console: [X, 'input']
 }
 
-!function main() {
-	function myCallback(result) {
-		console.log('my-result:' + result);
-	}
-	async(myCallback);
-}();
+var myCallback2 = function (result) {
+	console.log(result); //console: [X, 'input2']
+}
+
+asyncf(['input'], myCallback);
+
+asyncf(['input2'], myCallback2);
+
+asyncf(['input3'], function(result) {
+	console.log(result); //console: [X, 'input3']
+});
 						</code>
 					</pre>
 				</section>
 				<section>
 					<pre>
-						<code	data-trim data-noescape>
-function async(callback) {
-	setTimeout(function() {
-		callback(Math.trunc(Math.random()*1000));
-	}, 2000);
-}
-
-!function main() {
-	async(function(result) {
-		console.log('my-result:' + result);
+						<code class="js">
+asyncf(['input'], function(r1) {
+	console.log(r1); //console: [0, 'input']
+	asyncf(r1, function(r2) {
+		console.log(r2); //console: [1, 0, 'input']
 	});
-}();
+});
 						</code>
 					</pre>
 				</section>
 				<section>
+					<h3>Callback Hell</h3>
 					<pre>
-						<code	data-trim data-noescape>
-function async(callback) {
-	setTimeout(function() {
-		callback(Math.trunc(Math.random()*1000));
-	}, 2000);
-}
-
-!function main() {
-	async(function(result) {
-		console.log('my-result[0]:' + result);
-		async(function(result) {
-			console.log('my-result[1]:' + result);
+						<code class="js">
+asyncf(['input'], function(r1) {
+	console.log(r1); //console: [0, 'input']
+	asyncf(r1, function(r2) {
+		console.log(r2); //console: [1, 0, 'input']
+		asyncf(r2, function(r3) {
+			console.log(r3);
+			//console: [2, 1, 0, 'input']
+			asyncf(r1, function(r4) {
+				console.log(r4);
+				//console: ?
+			});
 		});
 	});
-}();
+});
 						</code>
 					</pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h3>Promise</h3>
+					<p>
+						Um <code>Promise</code> representa um proxy para um valor não necessáriamente conhecido quando a promessa é criada.
+					</p>
+				</section>
+				<section>
+					<h4>States</h4>
+					<p>Um objeto <code>Promise</code> está em um dos três estados:</p>
+					<ul>
+						<li>
+							<b>pendente (pending):</b> estado inicial.
+						</li>
+						<li>
+							<b>realizada (fulfilled):</b> sucesso na operação
+						</li>
+						<li>
+							<b>rejeitado (rejected):</b> falha na operação.
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h4>Criando uma promessa</h4>
+					<pre>
+						<code class="js">
+/**
+ * Irá resolver o [[Promise]] dentro de 1 segundo
+ *
+ * @param {Array} input
+ * @param {Function} callback
+ *        Método que será executado dentro de 1s.
+ */
+var count = 0;
+function asyncf(input) {
+	return new Promise(function(resolve, reject) {
+		setTimeout(function() {
+			resolve([count++].concat(input));
+		}, Math.trunc(Math.random()*1000));
+	});
+}
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code class="js">
+asyncf(['input'])
+	.then(function(result) {
+		console.log(result); //console: [0, "input"]
+	});
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code class="js">
+asyncf(['input'])
+	.then(function(result) {
+		console.log(result); //console: [0, "input"];
+		return asyncf(result);
+	})
+	.then(function(result2) {
+		console.log(result2); //console: [1, 0, "input"];
+	});
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code class="js">
+asyncf(['input'])
+	.then(function(result) {
+		console.log(result); //console: [0, "input"];
+		return asyncf(result);
+	})
+	.then(function(result2) {
+		console.log(result2); //console: [1, 0, "input"];
+		return result2[0];
+	})
+	.then(function(first) {
+		console.log(first); //console: 1
+	});
+						</code>
+					</pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					<h3>Tratamento de erros</h3>
+				</section>
+				<section>
+					<h4>Callback</h4>
+					<pre>
+						<code>
+function asyncf(input, success, failure) {
+	try {
+		...
+	} catch(err) {
+		failure(err);
+		return;
+	}
+	success(output);
+}
+
+asyncf(myInput,
+	function() {
+		console.log('success')
+	},
+	function() {
+		console.log('failure')
+	}
+);
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h4>Promise</h4>
+					<pre>
+						<code>
+function asyncf(input) {
+	return new Promise(function(resolve, reject) {
+		...
+		resolve(output);
+	});
+}
+
+asyncf(input)
+	.then(function() {
+		console.log('success');
+	})
+	.catch(function() {
+		console.log('failure');
+	})
+
+
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h4>Promise</h4>
+					<pre>
+						<code>
+function asyncf(input) {
+	return new Promise(function(resolve, reject) {
+		...
+		reject(output);
+	});
+}
+
+asyncf(input)
+	.then(function() {
+		console.log('success');
+	})
+	.catch(function() {
+		console.log('failure');
+	})
+						</code>
+					</pre>
+				</section>
+			</section>
+			<section>
+				<section>
+					O <code>Promise</code> substitui o <code>Callback</code>?
+				</section>
+				<section>
+					E os <code>Events</code>, como ficam?
+				</section>
+				<section>
+					Quando utilizar cada um?
 				</section>
 			</section>
 		</div>
