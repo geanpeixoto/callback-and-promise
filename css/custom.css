@@ -1,0 +1,7 @@
+.reveal pre code {
+  max-height: 540px;
+}
+
+.reveal h1 {
+  text-shadow: none;
+}
