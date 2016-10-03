@@ -1,50 +1,167 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+	<title>reveal.js</title>
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h1>Callback & Promises</h1>
+				<h3>Gean Carlo Peixoto</h3>
+			</section>
+			<section>
+				O fluxo de execução de um programa é determinado pela ordem em que suas
+				instruções são executadas.
+			</section>
+			<section>
+				Algumas tarefas podem ser executadas sem interferir em nada no fluxo principal
+				de execução. Essas tarefas são conhecidas como fluxos assíncronos.
+			</section>
+			<section>
+				<h3>Async functions</h3>
+				<ul>
+					<li>Timers</li>
+					<li>Comunicação com o servidor</li>
+					<li>Eventos do DOM</li>
+				</ul>
+			</section>
+			<section>
+				<h3>Revisão...</h3>
+			</section>
+			<section>
+				<h3>Callbacks</h3>
+				<p>
+					<i>Callback</i> é a referência à uma função que será executada no futuro,
+					em um tempo conveniênte.
+				</p>
+			</section>
+			<section>
+				<section>
+					<pre>
+						<code	data-trim data-noescape>
+/**
+ * Irá executar um método qualquer após o delay de 2s
+ *
+ * @param {function} callback
+ * 		Método que será executado
+ *
+ * @return {voidnoc}
+ */
+function async(callback) {
+	setTimeout(function() {
+		callback(Math.trunc(Math.random()*1000));
+	}, 2000);
+}
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code	data-trim data-noescape>
+function async(callback) {
+	setTimeout(function() {
+		callback(Math.trunc(Math.random()*1000));
+	}, 2000);
+}
+
+!function main() {
+	function myCallback(result) {
+		console.log('my-result:' + result);
+	}
+	async(myCallback);
+}();
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code	data-trim data-noescape>
+function async(callback) {
+	setTimeout(function() {
+		callback(Math.trunc(Math.random()*1000));
+	}, 2000);
+}
+
+!function main() {
+	async(function(result) {
+		console.log('my-result:' + result);
+	});
+}();
+						</code>
+					</pre>
+				</section>
+				<section>
+					<pre>
+						<code	data-trim data-noescape>
+function async(callback) {
+	setTimeout(function() {
+		callback(Math.trunc(Math.random()*1000));
+	}, 2000);
+}
+
+!function main() {
+	async(function(result) {
+		console.log('my-result[0]:' + result);
+		async(function(result) {
+			console.log('my-result[1]:' + result);
+		});
+	});
+}();
+						</code>
+					</pre>
+				</section>
+			</section>
 		</div>
+	</div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+	<script>
+		// More info https://github.com/hakimel/reveal.js#configuration
+		Reveal.initialize({
+			// controls: false,
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+			history: true,
+
+			// More info https://github.com/hakimel/reveal.js#dependencies
+			dependencies: [{
+				src: 'plugin/markdown/marked.js'
+			}, {
+				src: 'plugin/markdown/markdown.js'
+			}, {
+				src: 'plugin/notes/notes.js',
+				async: true
+			}, {
+				src: 'plugin/highlight/highlight.js',
+				async: true,
+				callback: function() {
+					hljs.initHighlightingOnLoad();
+				}
+			}]
+		});
+	</script>
+</body>
+
 </html>
