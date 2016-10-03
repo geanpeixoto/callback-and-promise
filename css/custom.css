@@ -1,3 +1,7 @@
+.reveal {
+  font-size: 48px;
+}
+
 .reveal pre code {
   max-height: 540px;
 }

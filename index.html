@@ -93,32 +93,20 @@ console.log(inner); // ReferenceError: inner is not defined
 				</section>
 				<section>
 					<pre><code class="js">
-/**
- * Quando executado, [[callback]], irá exibir "run" no console
- */
+// Quando executado, [[callback]], irá exibir "run"
 function callback() {
 	console.log('run');
 }
 
-/**
- * Espera 1s e, então, executa o método [[callback]]
- */
+// Espera 1s e, então, executa o método [[callback]]
 setTimeout(callback, 1000);
 						</code></pre>
 				</section>
 				<section>
+					<h4>Criando um callback</h4>
 					<pre><code class="js">
-/**
- * Irá executar o [[callback]] dentro de 1 segundo
- *
- * @param {Array} input
- * @param {Function} callback
- *        Método que será executado dentro de 1s.
- *        Seu primeiro parâmetro será o [[input]] com [[count]]
- *        inserido no início, isto é: [input, ...count]
- */
 var count = 0;
-function asyncf(input, callback) {
+function myFunction(input, callback) {
   setTimeout(function() {
     callback([count++].concat(input));
   }, Math.trunc(Math.random()*1000));
@@ -131,24 +119,21 @@ function myCallback(result) {
 	console.log(result); //console: [X, 'input']
 }
 
-var myCallback2 = function (result) {
-	console.log(result); //console: [X, 'input2']
-}
-
-asyncf(['input'], myCallback);
-
-asyncf(['input2'], myCallback2);
-
-asyncf(['input3'], function(result) {
-	console.log(result); //console: [X, 'input3']
-});
-						</code></pre>
+myFunction(['input'], myCallback);
+					</code></pre>
 				</section>
 				<section>
 					<pre><code class="js">
-asyncf(['input'], function(r1) {
+myFunction(['input'], function(result) {
+	console.log(result); //console: [X, 'input']
+});
+					</code></pre>
+				</section>
+				<section>
+					<pre><code class="js">
+myFunction(['input'], function(r1) {
 	console.log(r1); //console: [0, 'input']
-	asyncf(r1, function(r2) {
+	myFunction(r1, function(r2) {
 		console.log(r2); //console: [1, 0, 'input']
 	});
 });
@@ -157,16 +142,14 @@ asyncf(['input'], function(r1) {
 				<section>
 					<h3>Callback Hell</h3>
 					<pre><code class="js">
-asyncf(['input'], function(r1) {
+myFunction(['input'], function(r1) {
 	console.log(r1); //console: [0, 'input']
-	asyncf(r1, function(r2) {
+	myFunction(r1, function(r2) {
 		console.log(r2); //console: [1, 0, 'input']
-		asyncf(r2, function(r3) {
-			console.log(r3);
-			//console: [2, 1, 0, 'input']
-			asyncf(r1, function(r4) {
-				console.log(r4);
-				//console: ?
+		myFunction(r2, function(r3) {
+			console.log(r3); //console: [2, 1, 0, 'input']
+			myFunction(r1, function(r4) {
+				console.log(r4); //console: ?
 			});
 		});
 	});
@@ -199,15 +182,8 @@ asyncf(['input'], function(r1) {
 				<section>
 					<h4>Criando uma promessa</h4>
 					<pre><code class="js">
-/**
- * Irá resolver o [[Promise]] dentro de 1 segundo
- *
- * @param {Array} input
- * @param {Function} callback
- *        Método que será executado dentro de 1s.
- */
 var count = 0;
-function asyncf(input) {
+function myFunction(input) {
 	return new Promise(function(resolve, reject) {
 		setTimeout(function() {
 			resolve([count++].concat(input));
@@ -218,7 +194,7 @@ function asyncf(input) {
 				</section>
 				<section>
 					<pre><code class="js">
-asyncf(['input'])
+myFunction(['input'])
 	.then(function(result) {
 		console.log(result); //console: [0, "input"]
 	});
@@ -226,29 +202,29 @@ asyncf(['input'])
 				</section>
 				<section>
 					<pre><code class="js">
-asyncf(['input'])
+myFunction(['input'])
 	.then(function(result) {
-		console.log(result); //console: [0, "input"];
-		return asyncf(result);
+		console.log(result); // console: [0, "input"];
+		return myFunction(result);
 	})
 	.then(function(result2) {
-		console.log(result2); //console: [1, 0, "input"];
+		console.log(result2); // console: [1, 0, "input"];
 	});
 						</code></pre>
 				</section>
 				<section>
 					<pre><code class="js">
-asyncf(['input'])
+myFunction(['input'])
 	.then(function(result) {
-		console.log(result); //console: [0, "input"];
-		return asyncf(result);
+		console.log(result); // console: [0, "input"];
+		return myFunction(result);
 	})
 	.then(function(result2) {
-		console.log(result2); //console: [1, 0, "input"];
+		console.log(result2); // console: [1, 0, "input"];
 		return result2[0];
 	})
 	.then(function(first) {
-		console.log(first); //console: 1
+		console.log(first); // console: 1
 	});
 						</code></pre>
 				</section>
@@ -260,7 +236,7 @@ asyncf(['input'])
 				<section>
 					<h4>Callback</h4>
 					<pre><code class="js">
-function asyncf(input, success, failure) {
+function myFunction(input, success, failure) {
 	try {
 		...
 	} catch(err) {
@@ -270,7 +246,7 @@ function asyncf(input, success, failure) {
 	success(output);
 }
 
-asyncf(myInput,
+myFunction(myInput,
 	function() {
 		console.log('success')
 	},
@@ -283,14 +259,14 @@ asyncf(myInput,
 				<section>
 					<h4>Promise</h4>
 					<pre><code class="js">
-function asyncf(input) {
+function myFunction(input) {
 	return new Promise(function(resolve, reject) {
 		...
 		resolve(output);
 	});
 }
 
-asyncf(input)
+myFunction(input)
 	.then(function() {
 		console.log('success');
 	})
@@ -304,14 +280,14 @@ asyncf(input)
 				<section>
 					<h4>Promise</h4>
 					<pre><code class="js">
-function asyncf(input) {
+function myFunction(input) {
 	return new Promise(function(resolve, reject) {
 		...
 		reject(output);
 	});
 }
 
-asyncf(input)
+myFunction(input)
 	.then(function() {
 		console.log('success');
 	})
@@ -357,6 +333,7 @@ asyncf(input)
 				src: 'plugin/highlight/highlight.js',
 				async: true,
 				callback: function() {
+					hljs.configure({tabReplace: '  '});
 					hljs.initHighlightingOnLoad();
 				}
 			}]
