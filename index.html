@@ -66,7 +66,7 @@ function myFunction() {
 myFunction(); // console: 10, undefined
 var string = "my string";
 myFunction(); // console: 11, "my string"
-console.log(inner); // ReferenceError: inner is not defined
+console.log(inner); //ReferenceError: inner is not def
 						</code></pre>
 				</section>
 			</section>
@@ -103,7 +103,7 @@ setTimeout(callback, 1000);
 						</code></pre>
 				</section>
 				<section>
-					<h4>Criando um callback</h4>
+					<h3>Criando um callback</h3>
 					<pre><code class="js">
 var count = 0;
 function myFunction(input, callback) {
@@ -116,7 +116,7 @@ function myFunction(input, callback) {
 				<section>
 					<pre><code class="js">
 function myCallback(result) {
-	console.log(result); //console: [X, 'input']
+	console.log(result); //console: [0, 'input']
 }
 
 myFunction(['input'], myCallback);
@@ -125,7 +125,7 @@ myFunction(['input'], myCallback);
 				<section>
 					<pre><code class="js">
 myFunction(['input'], function(result) {
-	console.log(result); //console: [X, 'input']
+	console.log(result); //console: [0, 'input']
 });
 					</code></pre>
 				</section>
@@ -161,18 +161,17 @@ myFunction(['input'], function(r1) {
 				<section>
 					<h3>Promise</h3>
 					<p>
-						Um <code>Promise</code> representa um proxy para um valor não necessáriamente conhecido quando a promessa é criada.
+						Um <i>Promise</i> representa um <i>proxy</i> para um valor não necessáriamente conhecido quando a promessa é criada.
 					</p>
 				</section>
 				<section>
-					<h4>States</h4>
-					<p>Um objeto <code>Promise</code> está em um dos três estados:</p>
+					<h3>States</h3>
 					<ul>
 						<li>
 							<b>pendente (pending):</b> estado inicial.
 						</li>
 						<li>
-							<b>realizada (fulfilled):</b> sucesso na operação
+							<b>realizada (fulfilled):</b> sucesso na operação.
 						</li>
 						<li>
 							<b>rejeitado (rejected):</b> falha na operação.
@@ -180,7 +179,11 @@ myFunction(['input'], function(r1) {
 					</ul>
 				</section>
 				<section>
-					<h4>Criando uma promessa</h4>
+					<h3>Fluxo</h3>
+					<img src="img/promises.png" />
+				</section>
+				<section>
+					<h3>Criando uma promessa</h3>
 					<pre><code class="js">
 var count = 0;
 function myFunction(input) {
@@ -228,13 +231,20 @@ myFunction(['input'])
 	});
 						</code></pre>
 				</section>
+				<section>
+					<h3>Browser support tables</h3>
+					<p class="ciu_embed" data-feature="promises" data-periods="future_1,current,past_1,past_2">
+						<a href="http://caniuse.com/#feat=promises">Can I Use promises?</a>
+						Data on support for the promises feature across the major browsers from caniuse.com.
+					</p>
+				</section>
 			</section>
 			<section>
 				<section>
 					<h3>Tratamento de erros</h3>
 				</section>
 				<section>
-					<h4>Callback</h4>
+					<h3>Callback</h3>
 					<pre><code class="js">
 function myFunction(input, success, failure) {
 	try {
@@ -247,17 +257,13 @@ function myFunction(input, success, failure) {
 }
 
 myFunction(myInput,
-	function() {
-		console.log('success')
-	},
-	function() {
-		console.log('failure')
-	}
+	function() { console.log('success') },
+	function() { console.log('failure') }
 );
 						</code></pre>
 				</section>
 				<section>
-					<h4>Promise</h4>
+					<h3>Promise</h3>
 					<pre><code class="js">
 function myFunction(input) {
 	return new Promise(function(resolve, reject) {
@@ -273,12 +279,10 @@ myFunction(input)
 	.catch(function() {
 		console.log('failure');
 	})
-
-
 						</code></pre>
 				</section>
 				<section>
-					<h4>Promise</h4>
+					<h3>Promise</h3>
 					<pre><code class="js">
 function myFunction(input) {
 	return new Promise(function(resolve, reject) {
@@ -296,23 +300,36 @@ myFunction(input)
 	})
 						</code></pre>
 				</section>
+
 			</section>
 			<section>
 				<section>
-					O <code>Promise</code> substitui o <code>Callback</code>?
+					O <i>Promise</i> substitui o <i>Callback</i>?
 				</section>
 				<section>
-					E os <code>Events</code>, como ficam?
+					E os <i>Events</i>, como ficam?
 				</section>
 				<section>
 					Quando utilizar cada um?
 				</section>
 			</section>
+			<section>
+					<h3>O que mais?</h3>
+					<ul>
+						<li><code>Promise.all</code></li>
+						<li><code>Promise.race</code></li>
+						<li><code>Promise.resolve</code></li>
+						<li><code>Promise.reject</code></li>
+						<li><code>generators</code></li>
+						<li><code>async functions</code></li>
+					</ul>
+				</section>
 		</div>
 	</div>
 
 	<script src="lib/js/head.min.js"></script>
 	<script src="js/reveal.js"></script>
+	<script src="//cdn.jsdelivr.net/caniuse-embed/1.0.1/caniuse-embed.min.js"></script>
 
 	<script>
 		// More info https://github.com/hakimel/reveal.js#configuration
